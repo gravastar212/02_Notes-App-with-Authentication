@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { useRouter } from "next/navigation";
+import { toaster } from "@/components/ui/toaster"
 
 export default function HomePage() {
   const token = useAuth();
@@ -47,8 +48,18 @@ export default function HomePage() {
       setNotes((prev) => [newNote, ...prev]); // show new note immediately
       setTitle("");
       setContent("");
+      toaster.create({
+        title: "Success",
+        description: "Note created successfully",
+        type: "success",
+      });
     } catch (err) {
       console.error("Failed to create note:", err);
+      toaster.create({
+        title: "Error",
+        description: "Failed to create note",
+        type: "error",
+      });
     } finally {
       setCreating(false);
     }
@@ -58,8 +69,18 @@ export default function HomePage() {
     try {
       await deleteNote(id);
       setNotes((prev) => prev.filter((n) => n.id !== id));
+      toaster.create({
+        title: "Success",
+        description: "Note deleted successfully",
+        type: "success",
+      });
     } catch (err) {
       console.error("Failed to delete note:", err);
+      toaster.create({
+        title: "Error",
+        description: "Failed to delete note",
+        type: "error",
+      });
     }
   }
 
@@ -77,8 +98,18 @@ export default function HomePage() {
         prev.map((n) => (n.id === editingNote.id ? updated : n))
       );
       setEditingNote(null);
+      toaster.create({
+        title: "Success",
+        description: "Note updated successfully",
+        type: "success",
+      });
     } catch (err) {
       console.error("Failed to update note:", err);
+      toaster.create({
+        title: "Error",
+        description: "Failed to update note",
+        type: "error",
+      });
     }
   }
 
@@ -104,7 +135,7 @@ export default function HomePage() {
 
       {/* Create Note Form */}
       <Box border="1px solid #ddd" p={4} mb={6} rounded="md">
-        <VStack spacing={3} align="stretch">
+        <VStack gap={3} align="stretch">
           <Input
             placeholder="Note Title"
             value={title}
@@ -118,7 +149,7 @@ export default function HomePage() {
           <Button
             colorScheme="teal"
             onClick={handleCreateNote}
-            isLoading={creating}
+            loading={creating}
           >
             Add Note
           </Button>
@@ -132,7 +163,7 @@ export default function HomePage() {
         notes.map((note) => (
           <Box key={note.id} border="1px solid #ddd" p={3} mb={2} rounded="md">
             {editingNote?.id === note.id ? (
-              <VStack spacing={2} align="stretch">
+              <VStack gap={2} align="stretch">
                 <Input
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
