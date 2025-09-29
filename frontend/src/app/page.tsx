@@ -1,33 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getNotes, createNote, deleteNote, updateNote } from "@/lib/notes";
+import { getNotes } from "@/lib/notes";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  Box,
-  Heading,
-  Text,
-  Spinner,
-  Input,
-  Textarea,
-  Button,
-  VStack,
-  HStack,
-  IconButton, 
-} from "@chakra-ui/react";
-import { LuPencil, LuTrash2 } from "react-icons/lu";
-import { toaster } from "@/components/ui/toaster"
+import { getUserFromToken } from "@/lib/user";
+import { Box, Spinner, Heading } from "@chakra-ui/react";
+import CreateNoteForm from "@/components/CreateNoteForm";
+import NotesList from "@/components/NotesList";
 
 export default function HomePage() {
   const token = useAuth();
+  const user = getUserFromToken(token);
   const [notes, setNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [editingNote, setEditingNote] = useState<any | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editContent, setEditContent] = useState("");
 
   // Fetch notes
   useEffect(() => {
@@ -38,164 +23,35 @@ export default function HomePage() {
       .finally(() => setLoading(false));
   }, [token]);
 
-  async function handleCreateNote() {
-    if (!title.trim() || !content.trim()) return;
-    try {
-      setCreating(true);
-      const newNote = await createNote(title, content);
-      setNotes((prev) => [newNote, ...prev]); // show new note immediately
-      setTitle("");
-      setContent("");
-      toaster.create({
-        title: "Created",
-        description: "Note created successfully",
-        type: "success",
-      });
-    } catch (err) {
-      console.error("Failed to create note:", err);
-      toaster.create({
-        title: "Error",
-        description: "Failed to create note",
-        type: "error",
-      });
-    } finally {
-      setCreating(false);
-    }
+  function handleNoteCreated(newNote: any) {
+    setNotes((prev) => [newNote, ...prev]);
   }
 
-  async function handleDelete(id: string) {
-    try {
-      await deleteNote(id);
-      setNotes((prev) => prev.filter((n) => n.id !== id));
-      toaster.create({
-        title: "Deleted",
-        description: "Note deleted successfully",
-        type: "warning",
-      });
-    } catch (err) {
-      console.error("Failed to delete note:", err);
-      toaster.create({
-        title: "Error",
-        description: "Failed to delete note",
-        type: "error",
-      });
-    }
-  }
-
-  function handleEdit(note: any) {
-    setEditingNote(note);
-    setEditTitle(note.title);
-    setEditContent(note.content);
-  }
-
-  async function handleSaveEdit() {
-    if (!editingNote) return;
-    try {
-      const updated = await updateNote(editingNote.id, editTitle, editContent);
-      setNotes((prev) =>
-        prev.map((n) => (n.id === editingNote.id ? updated : n))
-      );
-      setEditingNote(null);
-      toaster.create({
-        title: "Updated",
-        description: "Note updated successfully",
-        type: "info",
-      });
-    } catch (err) {
-      console.error("Failed to update note:", err);
-      toaster.create({
-        title: "Error",
-        description: "Failed to update note",
-        type: "error",
-      });
-    }
-  }
-
-  function handleCancelEdit() {
-    setEditingNote(null);
-  }
-
-  if (loading) return <Spinner size="xl" mt={10} />;
-
-  return (
-    <Box p={6}>
-
-      {/* Create Note Form */}
-      <Box border="1px solid #ddd" p={4} mb={6} rounded="md">
-        <VStack gap={3} align="stretch">
-          <Input
-            placeholder="Note Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <Textarea
-            placeholder="Note Content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          <Button
-            colorScheme="teal"
-            onClick={handleCreateNote}
-            loading={creating}
-          >
-            Add Note
-          </Button>
-        </VStack>
+  // While redirecting, show loading spinner
+  if (!user) {
+    return (
+      <Box textAlign="center" mt={20}>
+        <Spinner size="xl" />
+        <Heading size="sm" mt={4}>Redirecting to login...</Heading>
       </Box>
+    );
+  }
 
-      {/* Notes List */}
-      {notes.length === 0 ? (
-        <Text>No notes yet. Create one above!</Text>
-      ) : (
-        notes.map((note) => (
-          <Box key={note.id} border="1px solid #ddd" p={3} mb={2} rounded="md">
-            {editingNote?.id === note.id ? (
-              <VStack gap={2} align="stretch">
-                <Input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                />
-                <Textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                />
-                <HStack>
-                  <Button colorScheme="teal" size="sm" onClick={handleSaveEdit}>
-                    Save
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={handleCancelEdit}>
-                    Cancel
-                  </Button>
-                </HStack>
-              </VStack>
-            ) : (
-              <>
-                <HStack justify="space-between" mb={2}>
-                  <Heading size="md">{note.title}</Heading>
-                  <HStack>
-                    <IconButton
-                      aria-label="Edit"
-                      size="sm"
-                      onClick={() => handleEdit(note)}
-                    >
-                      <LuPencil />
-                    </IconButton>
-                    <IconButton
-                      aria-label="Delete"
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => handleDelete(note.id)}
-                    >
-                      <LuTrash2 />
-                    </IconButton>
-                  </HStack>
-                </HStack>
-                <Text>{note.content}</Text>
-              </>
-            )}
-          </Box>
-        ))
-      )}
+  if (loading) {
+    return (
+      <Box textAlign="center" mt={20}>
+        <Spinner size="xl" />
+        <Heading size="sm" mt={4}>Loading notes...</Heading>
+      </Box>
+    );
+  }
+
+  // If logged in, show notes page
+  return (
+    <Box maxW="xl" mx="auto" mt={10}>
+      <Heading mb={6}>Welcome, {user.email} 👋</Heading>
+      <CreateNoteForm onNoteCreated={handleNoteCreated} />
+      <NotesList notes={notes} setNotes={setNotes} />
     </Box>
   );
 }

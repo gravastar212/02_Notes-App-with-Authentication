@@ -21,7 +21,7 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     // Generate token
-    const token = generateToken({ userId: user.id });
+    const token = generateToken({ userId: user.id, email: user.email });
 
     return res.status(201).json({
       user: {
@@ -54,7 +54,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     // Generate token
-    const token = generateToken({ userId: user.id });
+    const token = generateToken({ userId: user.id, email: user.email });
 
     return res.status(200).json({
       user: {
