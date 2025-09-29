@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { getNotes } from "@/lib/notes";
-import { useAuth } from "@/hooks/useAuth";
-import { getUserFromToken } from "@/lib/user";
+import { useAuthContext } from "@/context/AuthContext";
 import { Box, Spinner, Heading } from "@chakra-ui/react";
 import CreateNoteForm from "@/components/CreateNoteForm";
 import NotesList from "@/components/NotesList";
 
 export default function HomePage() {
-  const token = useAuth();
-  const user = getUserFromToken(token);
+  const { user, token } = useAuthContext();
   const [notes, setNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

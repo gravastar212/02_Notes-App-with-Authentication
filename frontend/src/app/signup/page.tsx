@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { signup } from "@/lib/auth";
 import { Box, Button, Input, Heading, VStack, Text, Progress } from "@chakra-ui/react";
 import validator from "validator";
-import { toaster } from "@/components/ui/toaster"
+import { toaster } from "@/components/ui/toaster";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function SignupPage() {
   const router = useRouter();
+  const { setToken } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -48,7 +50,7 @@ export default function SignupPage() {
     try {
       setError("");
       const res = await signup(email, password);
-      localStorage.setItem("token", res.token);
+      setToken(res.token); // use context instead of localStorage manually
       toaster.create({
         title: "Signup Successful",
         description: "Welcome to Notes App!",

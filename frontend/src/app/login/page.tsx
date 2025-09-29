@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { login } from "@/lib/auth";
 import { Box, Button, Input, Heading, VStack, Text } from "@chakra-ui/react";
 import validator from "validator";
-import { toaster } from "@/components/ui/toaster"
+import { toaster } from "@/components/ui/toaster";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setToken } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -37,8 +39,7 @@ export default function LoginPage() {
     try {
       setError("");
       const res = await login(email, password);
-      localStorage.setItem("token", res.token); // store JWT
-      window.dispatchEvent(new Event("authChange")); // notify auth change
+      setToken(res.token); // use context instead of localStorage manually
       toaster.create({
         title: "Login Successful",
         description: "Welcome back!",

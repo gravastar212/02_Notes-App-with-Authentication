@@ -2,18 +2,15 @@
 
 import { Box, Flex, Heading, Spacer, Button, HStack, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
-import { getUserFromToken } from "@/lib/user";
+import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
-  const token = useAuth();
+  const { user, setToken } = useAuthContext();
   const router = useRouter();
-  const user = getUserFromToken(token);
 
   function handleLogout() {
-    localStorage.removeItem("token");
-    window.dispatchEvent(new Event("authChange")); // notify auth change
+    setToken(null);
     router.push("/login");
   }
 
