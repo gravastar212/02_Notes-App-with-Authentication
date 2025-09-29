@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { hashPassword, comparePassword, generateToken, verifyToken } from './utils/auth';
 import authRoutes from './routes/auth';
+import { requireAuth, AuthRequest } from './middleware/authMiddleware';
 
 const app = express();
 
@@ -36,6 +37,10 @@ app.get('/auth-test', async (_req, res) => {
     token,
     decoded,
   });
+});
+
+app.get('/api/protected', requireAuth, (req: AuthRequest, res) => {
+  res.json({ message: 'You are authenticated ✅', user: req.user });
 });
 
 export default app;
