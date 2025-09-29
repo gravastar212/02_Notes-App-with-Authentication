@@ -16,12 +16,10 @@ import {
   IconButton, 
 } from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
-import { useRouter } from "next/navigation";
 import { toaster } from "@/components/ui/toaster"
 
 export default function HomePage() {
   const token = useAuth();
-  const router = useRouter();
   const [notes, setNotes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -49,7 +47,7 @@ export default function HomePage() {
       setTitle("");
       setContent("");
       toaster.create({
-        title: "Success",
+        title: "Created",
         description: "Note created successfully",
         type: "success",
       });
@@ -70,9 +68,9 @@ export default function HomePage() {
       await deleteNote(id);
       setNotes((prev) => prev.filter((n) => n.id !== id));
       toaster.create({
-        title: "Success",
+        title: "Deleted",
         description: "Note deleted successfully",
-        type: "success",
+        type: "warning",
       });
     } catch (err) {
       console.error("Failed to delete note:", err);
@@ -99,9 +97,9 @@ export default function HomePage() {
       );
       setEditingNote(null);
       toaster.create({
-        title: "Success",
+        title: "Updated",
         description: "Note updated successfully",
-        type: "success",
+        type: "info",
       });
     } catch (err) {
       console.error("Failed to update note:", err);
@@ -117,21 +115,10 @@ export default function HomePage() {
     setEditingNote(null);
   }
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    router.push("/login");
-  }
-
   if (loading) return <Spinner size="xl" mt={10} />;
 
   return (
     <Box p={6}>
-      <HStack justify="space-between" mb={6}>
-        <Heading>Your Notes</Heading>
-        <Button colorScheme="red" onClick={handleLogout}>
-          Logout
-        </Button>
-      </HStack>
 
       {/* Create Note Form */}
       <Box border="1px solid #ddd" p={4} mb={6} rounded="md">

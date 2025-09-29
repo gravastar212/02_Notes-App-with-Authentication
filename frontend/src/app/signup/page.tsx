@@ -16,6 +16,7 @@ export default function SignupPage() {
       setError("");
       const res = await signup(email, password);
       localStorage.setItem("token", res.token); // store JWT
+      window.dispatchEvent(new Event("authChange")); // notify auth change
       router.push("/"); // redirect home
     } catch (err: any) {
       setError(err.response?.data?.error || "Signup failed");
@@ -25,7 +26,7 @@ export default function SignupPage() {
   return (
     <Box maxW="sm" mx="auto" mt={10} p={6} borderWidth="1px" borderRadius="md">
       <Heading mb={4}>Sign Up</Heading>
-      <VStack spacing={3}>
+      <VStack gap={3}>
         <Input
           placeholder="Email"
           value={email}

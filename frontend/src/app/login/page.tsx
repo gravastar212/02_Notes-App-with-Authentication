@@ -16,6 +16,7 @@ export default function LoginPage() {
       setError("");
       const res = await login(email, password);
       localStorage.setItem("token", res.token); // store JWT
+      window.dispatchEvent(new Event("authChange")); // notify auth change
       router.push("/"); // redirect home
     } catch (err: any) {
       setError(err.response?.data?.error || "Login failed");
@@ -25,7 +26,7 @@ export default function LoginPage() {
   return (
     <Box maxW="sm" mx="auto" mt={10} p={6} borderWidth="1px" borderRadius="md">
       <Heading mb={4}>Login</Heading>
-      <VStack spacing={3}>
+      <VStack gap={3}>
         <Input
           placeholder="Email"
           value={email}

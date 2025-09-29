@@ -8,13 +8,26 @@ export function useAuth() {
   const router = useRouter();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      router.push("/login");
-    } else {
+    const updateToken = () => {
+      const storedToken = localStorage.getItem("token");
       setToken(storedToken);
-    }
-  }, [router]);
+    };
+
+    // Initial load
+    updateToken();
+
+    // Listen for storage changes
+    window.addEventListener("storage", updateToken);
+
+    // Custom event for same-tab updates
+    const handleAuthChange = () => updateToken();
+    window.addEventListener("authChange", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("storage", updateToken);
+      window.removeEventListener("authChange", handleAuthChange);
+    };
+  }, []);
 
   return token;
 }
