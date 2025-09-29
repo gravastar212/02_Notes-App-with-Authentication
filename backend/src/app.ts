@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import { hashPassword, comparePassword, generateToken, verifyToken } from './utils/auth';
 import authRoutes from './routes/auth';
 import { requireAuth, AuthRequest } from './middleware/authMiddleware';
+import notesRoutes from './routes/notes';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json()); // Parse JSON body
 app.use(morgan('dev'));  // Log HTTP requests
 
 app.use('/api/auth', authRoutes);
+app.use('/api/notes', notesRoutes);
 
 // Health check route
 app.get('/health', (_req, res) => {
