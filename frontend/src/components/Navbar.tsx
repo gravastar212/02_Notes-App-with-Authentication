@@ -24,6 +24,11 @@ export default function Navbar() {
         {user ? (
           <HStack gap={4}>
             <Text fontWeight="medium">{user.email}</Text>
+            <Link href="/profile">
+              <Button size="sm" variant="outline" colorScheme="blue">
+                Profile
+              </Button>
+            </Link>
             <Button colorScheme="red" size="sm" onClick={handleLogout}>
               Logout
             </Button>
