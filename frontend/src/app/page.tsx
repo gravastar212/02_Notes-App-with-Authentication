@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getNotes, createNote } from "@/lib/notes";
+import { getNotes, createNote, deleteNote, updateNote } from "@/lib/notes";
 import { useAuth } from "@/hooks/useAuth";
 import {
   Box,
@@ -13,7 +13,9 @@ import {
   Button,
   VStack,
   HStack,
+  IconButton, 
 } from "@chakra-ui/react";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
@@ -24,6 +26,9 @@ export default function HomePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [creating, setCreating] = useState(false);
+  const [editingNote, setEditingNote] = useState<any | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
 
   // Fetch notes
   useEffect(() => {
@@ -47,6 +52,38 @@ export default function HomePage() {
     } finally {
       setCreating(false);
     }
+  }
+
+  async function handleDelete(id: string) {
+    try {
+      await deleteNote(id);
+      setNotes((prev) => prev.filter((n) => n.id !== id));
+    } catch (err) {
+      console.error("Failed to delete note:", err);
+    }
+  }
+
+  function handleEdit(note: any) {
+    setEditingNote(note);
+    setEditTitle(note.title);
+    setEditContent(note.content);
+  }
+
+  async function handleSaveEdit() {
+    if (!editingNote) return;
+    try {
+      const updated = await updateNote(editingNote.id, editTitle, editContent);
+      setNotes((prev) =>
+        prev.map((n) => (n.id === editingNote.id ? updated : n))
+      );
+      setEditingNote(null);
+    } catch (err) {
+      console.error("Failed to update note:", err);
+    }
+  }
+
+  function handleCancelEdit() {
+    setEditingNote(null);
   }
 
   function handleLogout() {
@@ -94,8 +131,50 @@ export default function HomePage() {
       ) : (
         notes.map((note) => (
           <Box key={note.id} border="1px solid #ddd" p={3} mb={2} rounded="md">
-            <Heading size="md">{note.title}</Heading>
-            <Text>{note.content}</Text>
+            {editingNote?.id === note.id ? (
+              <VStack spacing={2} align="stretch">
+                <Input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                />
+                <Textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                />
+                <HStack>
+                  <Button colorScheme="teal" size="sm" onClick={handleSaveEdit}>
+                    Save
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                    Cancel
+                  </Button>
+                </HStack>
+              </VStack>
+            ) : (
+              <>
+                <HStack justify="space-between" mb={2}>
+                  <Heading size="md">{note.title}</Heading>
+                  <HStack>
+                    <IconButton
+                      aria-label="Edit"
+                      size="sm"
+                      onClick={() => handleEdit(note)}
+                    >
+                      <LuPencil />
+                    </IconButton>
+                    <IconButton
+                      aria-label="Delete"
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleDelete(note.id)}
+                    >
+                      <LuTrash2 />
+                    </IconButton>
+                  </HStack>
+                </HStack>
+                <Text>{note.content}</Text>
+              </>
+            )}
           </Box>
         ))
       )}
