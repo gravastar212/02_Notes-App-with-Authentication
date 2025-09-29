@@ -25,3 +25,16 @@ backend/ → Express + Prisma
 1. Clone the repo
 2. Create `.env` from `.env.example`
 3. Install dependencies in `/frontend` and `/backend`
+
+## Development Setup
+### Backend
+```bash
+cd backend
+npm install
+npm run dev
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
