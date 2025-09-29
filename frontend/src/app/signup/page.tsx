@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { signup } from "@/lib/auth";
 import { Box, Button, Input, Heading, VStack, Text, Progress } from "@chakra-ui/react";
 import validator from "validator";
+import { toaster } from "@/components/ui/toaster"
 
 export default function SignupPage() {
   const router = useRouter();
@@ -24,11 +25,23 @@ export default function SignupPage() {
 
   async function handleSignup() {
     if (!validator.isEmail(email)) {
-      setError("Invalid email format");
+      toaster.create({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        type: "error",
+        duration: 3000,
+        closable: true,
+      });
       return;
     }
     if (checkPasswordStrength(password) < 3) {
-      setError("Password too weak (use 8+ chars, numbers, symbols)");
+      toaster.create({
+        title: "Weak Password",
+        description: "Use 8+ chars with numbers & symbols",
+        type: "error",
+        duration: 3000,
+        closable: true,
+      });
       return;
     }
 
@@ -36,12 +49,26 @@ export default function SignupPage() {
       setError("");
       const res = await signup(email, password);
       localStorage.setItem("token", res.token);
+      toaster.create({
+        title: "Signup Successful",
+        description: "Welcome to Notes App!",
+        type: "success",
+        duration: 3000,
+        closable: true,
+      });
       router.push("/");
     } catch (err: any) {
       if (err.response?.data?.errors) {
         setError(err.response.data.errors[0].msg); // show first error
       } else {
         setError(err.response?.data?.error || "Signup failed");
+        toaster.create({
+          title: "Signup Error",
+          description: "errorMsg",
+          type: "error",
+          duration: 4000,
+          closable: true,
+        });
       }
     }
   }

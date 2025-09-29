@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { login } from "@/lib/auth";
 import { Box, Button, Input, Heading, VStack, Text } from "@chakra-ui/react";
 import validator from "validator";
+import { toaster } from "@/components/ui/toaster"
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,11 +16,21 @@ export default function LoginPage() {
   async function handleLogin() {
     // Inside handleLogin:
     if (!validator.isEmail(email)) {
-      setError("Invalid email format");
+      toaster.create({
+        title: "Invalid Email",
+        type: "error",
+        duration: 3000,
+        closable: true,
+      });
       return;
     }
     if (password.trim().length === 0) {
-      setError("Password cannot be empty");
+      toaster.create({
+        title: "Empty Password",
+        type: "error",
+        duration: 3000,
+        closable: true,
+      });
       return;
     }
 
@@ -28,12 +39,26 @@ export default function LoginPage() {
       const res = await login(email, password);
       localStorage.setItem("token", res.token); // store JWT
       window.dispatchEvent(new Event("authChange")); // notify auth change
+      toaster.create({
+        title: "Login Successful",
+        description: "Welcome back!",
+        type: "success",
+        duration: 3000,
+        closable: true,
+      });
       router.push("/"); // redirect home
     } catch (err: any) {
       if (err.response?.data?.errors) {
         setError(err.response.data.errors[0].msg); // show first error
       } else {
         setError(err.response?.data?.error || "Login failed");
+        toaster.create({
+          title: "Login Error",
+          description: "errorMsg",
+          type: "error",
+          duration: 4000,
+          closable: true,
+        });
       }
     }
   }
