@@ -30,7 +30,11 @@ export default function LoginPage() {
       window.dispatchEvent(new Event("authChange")); // notify auth change
       router.push("/"); // redirect home
     } catch (err: any) {
-      setError(err.response?.data?.error || "Login failed");
+      if (err.response?.data?.errors) {
+        setError(err.response.data.errors[0].msg); // show first error
+      } else {
+        setError(err.response?.data?.error || "Login failed");
+      }
     }
   }
 

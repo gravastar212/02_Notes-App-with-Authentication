@@ -38,7 +38,11 @@ export default function SignupPage() {
       localStorage.setItem("token", res.token);
       router.push("/");
     } catch (err: any) {
-      setError(err.response?.data?.error || "Signup failed");
+      if (err.response?.data?.errors) {
+        setError(err.response.data.errors[0].msg); // show first error
+      } else {
+        setError(err.response?.data?.error || "Signup failed");
+      }
     }
   }
 
