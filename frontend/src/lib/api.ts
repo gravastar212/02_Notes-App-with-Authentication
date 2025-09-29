@@ -17,4 +17,11 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export async function fetchProfile(token: string) {
+  const res = await api.get("/users/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+}
+
 export default api;

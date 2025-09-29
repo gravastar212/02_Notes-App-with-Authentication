@@ -5,6 +5,7 @@ import { hashPassword, comparePassword, generateToken, verifyToken } from './uti
 import authRoutes from './routes/auth';
 import { requireAuth, AuthRequest } from './middleware/authMiddleware';
 import notesRoutes from './routes/notes';
+import userRoutes from './routes/user';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(morgan('dev'));  // Log HTTP requests
 
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', notesRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check route
 app.get('/health', (_req, res) => {
