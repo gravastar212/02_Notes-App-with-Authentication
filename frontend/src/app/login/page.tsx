@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/auth";
 import { Box, Button, Input, Heading, VStack, Text } from "@chakra-ui/react";
+import validator from "validator";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +13,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   async function handleLogin() {
+    // Inside handleLogin:
+    if (!validator.isEmail(email)) {
+      setError("Invalid email format");
+      return;
+    }
+    if (password.trim().length === 0) {
+      setError("Password cannot be empty");
+      return;
+    }
+
     try {
       setError("");
       const res = await login(email, password);
