@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "test": "mocha -r ts-node/register tests/**/*.test.ts --timeout 10000"
   },
   "keywords": [],
   "author": "",
@@ -24,12 +25,20 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/chai": "^5.2.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/mocha": "^10.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.5.2",
+    "@types/supertest": "^6.0.3",
+    "chai": "^6.2.0",
+    "mocha": "^11.7.2",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
   }
 }
