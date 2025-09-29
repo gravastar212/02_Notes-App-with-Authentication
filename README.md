@@ -11,24 +11,29 @@ A full-stack notes application built with:
 - **Tooling**: ESLint + Prettier
 
 ## Goals
+
 - Learn authentication best practices (JWT + refresh tokens)
 - Work with a relational database (Postgres + Prisma)
 - Explore SSR rendering in Next.js
 - Practice secure password hashing & input validation
 
 ## Project Structure
+
 notes-app/
 frontend/ → Next.js app
 backend/ → Express + Prisma
 
 ## Setup
+
 1. Clone the repo
 2. Create `.env` from `.env.example`
 3. Install dependencies in `/frontend` and `/backend`
 
 ## Development Setup
+
 ### Backend
-```bash
+
+````bash
 cd backend
 npm install
 npm run dev
@@ -38,3 +43,4 @@ npm run dev
 cd frontend
 npm install
 npm run dev
+````
