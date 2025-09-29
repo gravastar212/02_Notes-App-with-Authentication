@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import { hashPassword, comparePassword, generateToken, verifyToken } from './utils/auth';
+import authRoutes from './routes/auth';
 
 const app = express();
 
@@ -12,6 +13,8 @@ app.use(cors({
 }));
 app.use(express.json()); // Parse JSON body
 app.use(morgan('dev'));  // Log HTTP requests
+
+app.use('/api/auth', authRoutes);
 
 // Health check route
 app.get('/health', (_req, res) => {
