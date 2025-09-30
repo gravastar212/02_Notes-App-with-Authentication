@@ -1,8 +1,8 @@
 import type { NextConfig } from 'next';
-import path from 'path';
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: path.join(__dirname, '../'),
+  // Remove outputFileTracingRoot as it's causing deployment issues
+  // This was likely added for a monorepo setup but isn't needed for a single app
 };
 
 export default nextConfig;
