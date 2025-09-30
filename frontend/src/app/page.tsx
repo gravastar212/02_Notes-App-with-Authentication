@@ -6,10 +6,11 @@ import { useAuthContext } from "@/context/AuthContext";
 import { Box, Spinner, Heading } from "@chakra-ui/react";
 import CreateNoteForm from "@/components/CreateNoteForm";
 import NotesList from "@/components/NotesList";
+import { Note } from "@/types";
 
 export default function HomePage() {
   const { user, token } = useAuthContext();
-  const [notes, setNotes] = useState<any[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch notes
@@ -21,7 +22,7 @@ export default function HomePage() {
       .finally(() => setLoading(false));
   }, [token]);
 
-  function handleNoteCreated(newNote: any) {
+  function handleNoteCreated(newNote: Note) {
     setNotes((prev) => [newNote, ...prev]);
   }
 

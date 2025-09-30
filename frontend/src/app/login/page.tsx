@@ -48,11 +48,12 @@ export default function LoginPage() {
         closable: true,
       });
       router.push("/"); // redirect home
-    } catch (err: any) {
-      if (err.response?.data?.errors) {
-        setError(err.response.data.errors[0].msg); // show first error
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { errors?: { msg: string }[]; error?: string } } };
+      if (error.response?.data?.errors) {
+        setError(error.response.data.errors[0].msg); // show first error
       } else {
-        setError(err.response?.data?.error || "Login failed");
+        setError(error.response?.data?.error || "Login failed");
         toaster.create({
           title: "Login Error",
           description: "errorMsg",

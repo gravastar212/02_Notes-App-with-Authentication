@@ -12,7 +12,7 @@ export function getUserFromToken(token: string | null) {
   try {
     const decoded = jwtDecode<JwtPayload>(token);
     return decoded;
-  } catch (err) {
+  } catch {
     return null;
   }
 }

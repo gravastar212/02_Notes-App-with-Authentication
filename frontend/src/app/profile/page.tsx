@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
 import { fetchProfile } from "@/lib/api";
 import { Box, Heading, Text, VStack, Spinner } from "@chakra-ui/react";
+import { UserProfile } from "@/types";
 
 export default function ProfilePage() {
-  const { user, token } = useAuthContext();
+  const { token } = useAuthContext();
   const router = useRouter();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     if (!token) {

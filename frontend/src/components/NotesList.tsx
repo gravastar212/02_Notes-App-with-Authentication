@@ -5,18 +5,12 @@ import { deleteNote, updateNote } from "@/lib/notes";
 import { Box, Text, VStack, HStack, Input, Textarea, Button, IconButton, Heading } from "@chakra-ui/react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { toaster } from "@/components/ui/toaster";
-
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Note } from "@/types";
+import { Dispatch, SetStateAction } from "react";
 
 interface NotesListProps {
   notes: Note[];
-  setNotes: (notes: Note[]) => void;
+  setNotes: Dispatch<SetStateAction<Note[]>>;
 }
 
 export default function NotesList({ notes, setNotes }: NotesListProps) {

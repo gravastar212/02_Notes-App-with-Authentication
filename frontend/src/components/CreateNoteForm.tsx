@@ -4,9 +4,10 @@ import { useState } from "react";
 import { createNote } from "@/lib/notes";
 import { Box, Input, Textarea, Button, VStack } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
+import { Note } from "@/types";
 
 interface CreateNoteFormProps {
-  onNoteCreated: (note: any) => void;
+  onNoteCreated: (note: Note) => void;
 }
 
 export default function CreateNoteForm({ onNoteCreated }: CreateNoteFormProps) {
